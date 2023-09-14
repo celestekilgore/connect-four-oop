@@ -21,7 +21,7 @@ class Game {
  */
   makeBoard() {
     for (let y = 0; y < this.height; y++) {
-      this.jsBoard.push(Array.from({ length: this.width }));
+      this.jsBoard.push(Array.from({ length: this.width }, function() {return null;}));
     }
   }
 
