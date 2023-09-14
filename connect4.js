@@ -30,6 +30,7 @@ class Game {
   /** makeHtmlBoard: make HTML table and row of column tops. */
 
 makeHtmlBoard() {
+  //TODO: clear board
   const board = document.getElementById('board');
 
   // make column tops (clickable area for adding a piece to that column)
@@ -137,7 +138,8 @@ checkForWin() {
   // }
 
   const _win = (cells) => {
-    cells.every(
+    console.log("cells:",cells);
+    return cells.every(
     ([y, x]) =>
       y >= 0 &&
       y < this.height &&
