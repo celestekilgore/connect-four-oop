@@ -11,9 +11,10 @@ class Game {
     this.height = height;
     this.width = width;
     this.currPlayer = 1;
-    this.jsBoard = [];
+    this.board = [];
     this.makeBoard();
     this.makeHtmlBoard();
+    // this.gameInstance = this;
   }
 
   /** makeBoard: create in-JS board structure:
@@ -21,7 +22,8 @@ class Game {
  */
   makeBoard() {
     for (let y = 0; y < this.height; y++) {
-      this.jsBoard.push(Array.from({ length: this.width }, function() {return null;}));
+      this.board.push(Array.from({ length: this.width }));
+      // this.board.push(Array.from({ length: this.width }, function() {return null;}));
     }
   }
 
@@ -37,7 +39,7 @@ makeHtmlBoard() {
   for (let x = 0; x < this.width; x++) {
     const headCell = document.createElement('td');
     headCell.setAttribute('id', x);
-    headCell.addEventListener('click', this.handleClick);
+    headCell.addEventListener('click', this.handleClick.bind(this));
     top.append(headCell);
   }
 
@@ -60,9 +62,9 @@ makeHtmlBoard() {
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
 findSpotForCol(x) {
-  console.log("JsBoard: ", this.jsBoard)
+  console.log("board: ", this.board)
   for (let y = this.height - 1; y >= 0; y--) {
-    if (!(this.jsBoard[y][x])) {
+    if (!(this.board[y][x])) {
       return y;
     }
   }
@@ -99,7 +101,7 @@ handleClick(evt) {
   }
 
   // place piece in board and add to HTML table
-  this.jsBoard[y][x] = this.currPlayer;
+  this.board[y][x] = this.currPlayer;
   this.placeInTable(y, x);
 
   // check for win
@@ -108,7 +110,7 @@ handleClick(evt) {
   }
 
   // check for tie
-  if (this.jsBoard.every(row => row.every(cell => cell))) {
+  if (this.board.every(row => row.every(cell => cell))) {
     return this.endGame('Tie!');
   }
 
@@ -119,20 +121,30 @@ handleClick(evt) {
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
 checkForWin() {
-  function _win(cells) {
-    // Check four cells to see if they're all color of current player
-    //  - cells: list of four (y, x) cells
-    //  - returns true if all are legal coordinates & all match currPlayer
+  // function _win(cells) {
+  //   // Check four cells to see if they're all color of current player
+  //   //  - cells: list of four (y, x) cells
+  //   //  - returns true if all are legal coordinates & all match currPlayer
 
-    return cells.every(
-      ([y, x]) =>
-        y >= 0 &&
-        y < this.height &&
-        x >= 0 &&
-        x < this.width &&
-        this.jsBoard[y][x] === this.currPlayer
-    );
-  }
+  //   return cells.every(
+  //     ([y, x]) =>
+  //       y >= 0 &&
+  //       y < this.height &&
+  //       x >= 0 &&
+  //       x < this.width &&
+  //       this.board[y][x] === this.currPlayer
+  //   );
+  // }
+
+  const _win = (cells) => {
+    cells.every(
+    ([y, x]) =>
+      y >= 0 &&
+      y < this.height &&
+      x >= 0 &&
+      x < this.width &&
+      this.board[y][x] === this.currPlayer
+  )};
 
   for (let y = 0; y < this.height; y++) {
     for (let x = 0; x < this.width; x++) {
@@ -144,6 +156,10 @@ checkForWin() {
       const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       // find winner (only checking each win-possibility as needed)
+      console.log("Horizontal: ", _win(horiz))
+      console.log("Vertical: ", _win(vert))
+      console.log("DiagR: ", _win(diagDR))
+      console.log("DiagL: ", _win(diagDL))
       if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
         return true;
       }
