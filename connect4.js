@@ -7,30 +7,17 @@
  */
 
 class Game {
-  constructor(height, width){
+  constructor(p1,p2,height, width){
     this.height = height;
     this.width = width;
-    this.currPlayer = 1;
+    this.currPlayer = p1.color;
+    this.p1 = p1;
+    this.p2 = p2;
     this.board = [];
     this.gameOver = false;
-    this.startGame();
-    // this.gameInstance = this;
-  }
+    this.makeBoard();
+    this.makeHtmlBoard();
 
-  startGame(){
-    const startButton = document.querySelector("#start-button");
-    const p1Color = document.querySelector("#p1-input");
-    const p2Color = document.querySelector("#p2-input");
-    console.log("P1 color: ", p1Color.value)
-    console.log("P2 color: ", p2Color.value)
-
-    startButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      this.gameOver = false;
-      
-      this.makeBoard();
-      this.makeHtmlBoard();
-    })
   }
 
   /** makeBoard: create in-JS board structure:
@@ -94,8 +81,13 @@ findSpotForCol(x) {
 
 placeInTable(y, x) {
   const piece = document.createElement('div');
+  if (this.currPlayer === this.p1.color) {
+    piece.style.backgroundColor = this.p1.color;
+  } else {
+    piece.style.backgroundColor = this.p2.color;
+  }
   piece.classList.add('piece');
-  piece.classList.add(`p${this.currPlayer}`);
+  //piece.classList.add(this.currPlayer);
 
   const spot = document.getElementById(`c-${y}-${x}`);
   spot.append(piece);
@@ -137,7 +129,7 @@ handleClick(evt) {
   }
 
   // switch players
-  this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+  this.currPlayer = this.currPlayer === this.p1.color ? this.p2.color : this.p1.color;
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -201,5 +193,14 @@ class Player{
     this.color = color;
   }
 }
+//add event listener
+ document.getElementById("start-button").addEventListener("click", (e) => {
+  e.preventDefault();
+  const p1Color = document.querySelector("#p1-input");
+  const p2Color = document.querySelector("#p2-input");
+  const p1 = new Player(p1Color.value);
+  const p2 = new Player(p2Color.value);
+  new Game(p1, p2, 6, 7);
+ });
 
-new Game(6, 7);
+
