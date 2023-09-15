@@ -10,7 +10,7 @@ class Game {
   constructor(p1,p2,height, width){
     this.height = height;
     this.width = width;
-    this.currPlayer = p1.color;
+    this.currPlayer = p1;
     this.p1 = p1;
     this.p2 = p2;
     this.board = [];
@@ -81,7 +81,7 @@ findSpotForCol(x) {
 
 placeInTable(y, x) {
   const piece = document.createElement('div');
-  if (this.currPlayer === this.p1.color) {
+  if (this.currPlayer === this.p1) {
     piece.style.backgroundColor = this.p1.color;
   } else {
     piece.style.backgroundColor = this.p2.color;
@@ -120,7 +120,7 @@ handleClick(evt) {
 
   // check for win
   if (this.checkForWin()) {
-    return this.endGame(`Player ${this.currPlayer} won!`);
+    return this.endGame(`Player ${this.currPlayer.color} won!`);
   }
 
   // check for tie
@@ -129,7 +129,7 @@ handleClick(evt) {
   }
 
   // switch players
-  this.currPlayer = this.currPlayer === this.p1.color ? this.p2.color : this.p1.color;
+  this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
