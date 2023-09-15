@@ -12,15 +12,32 @@ class Game {
     this.width = width;
     this.currPlayer = 1;
     this.board = [];
-    this.makeBoard();
-    this.makeHtmlBoard();
+    this.gameOver = false;
+    this.startGame();
     // this.gameInstance = this;
+  }
+
+  startGame(){
+    const startButton = document.querySelector("#start-button");
+    const p1Color = document.querySelector("#p1-input");
+    const p2Color = document.querySelector("#p2-input");
+    console.log("P1 color: ", p1Color.value)
+    console.log("P2 color: ", p2Color.value)
+
+    startButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.gameOver = false;
+      
+      this.makeBoard();
+      this.makeHtmlBoard();
+    })
   }
 
   /** makeBoard: create in-JS board structure:
  *   board = array of rows, each row is array of cells  (board[y][x])
  */
   makeBoard() {
+    this.board = [];
     for (let y = 0; y < this.height; y++) {
       this.board.push(Array.from({ length: this.width }));
       // this.board.push(Array.from({ length: this.width }, function() {return null;}));
@@ -94,6 +111,9 @@ endGame(msg) {
 
 handleClick(evt) {
   // get x from ID of clicked cell
+  if(this.gameOver === true){
+    return;
+  }
   const x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
@@ -138,6 +158,7 @@ checkForWin() {
     );
   }
   const win = _win.bind(this);
+  console.log('win function: ', win)
 
   // const _win = (cells) => {
   //   console.log("cells:",cells);
@@ -160,18 +181,25 @@ checkForWin() {
       const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       // find winner (only checking each win-possibility as needed)
-      console.log("Horizontal: ", _win(horiz))
-      console.log("Vertical: ", _win(vert))
-      console.log("DiagR: ", _win(diagDR))
-      console.log("DiagL: ", _win(diagDL))
+      // console.log("Horizontal: ", _win(horiz))
+      // console.log("Vertical: ", _win(vert))
+      // console.log("DiagR: ", _win(diagDR))
+      // console.log("DiagL: ", _win(diagDL))
+      // if ( win(horiz) || win(vert) || win(diagDR) || win(diagDL) ) {
       if ( _win.call(this,horiz) || _win.call(this,vert) || _win.call(this,diagDR) || _win.call(this,diagDL) ) {
-      //if ( _win.call(this,horiz) || _win.call(this,vert) || _win.call(this,diagDR) || _win.call(this,diagDL) ) {
+        this.gameOver = true;
         return true;
       }
     }
   }
 }
 
+}
+
+class Player{
+  constructor(color){
+    this.color = color;
+  }
 }
 
 new Game(6, 7);
