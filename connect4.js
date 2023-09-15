@@ -194,7 +194,10 @@ class Player{
   }
 }
 //add event listener
- document.getElementById("start-button").addEventListener("click", (e) => {
+ let startButton = document.getElementById("start-button")
+
+ if(startButton)
+ startButton.addEventListener("click", (e) => {
   e.preventDefault();
   const p1Color = document.querySelector("#p1-input");
   const p2Color = document.querySelector("#p2-input");
